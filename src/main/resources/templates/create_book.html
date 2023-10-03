@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{Layout::html_head}">
+    <meta charset="UTF-8">
+    <title>Create manga</title>
+</head>
+<style th:replace="~{Layout::style_layout}"></style>
+<style>
+
+html {
+    height: 100%;
+}
+body {
+    margin:0;
+    padding:0;
+    font-family: sans-serif;
+    background: linear-gradient(#141e30, #243b55);
+}
+
+.searchTerm {
+    width: 100%;
+    border: 3px solid #00B4CC;
+    padding: 15px;
+    height: 20px;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    color: #9DBFAF;
+}
+
+.searchTerm:focus{
+    color: #00B4CC;
+}
+
+.submitButton{
+    position: relative;
+    width: 175px;
+    display: block;
+    padding: 10px 20px;
+    color: #03e9f4;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 10px;
+    letter-spacing: 4px;
+    background: rgba(0,0,0,.5);
+}
+
+.submitButton:hover{
+    background: #03e9f4;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #03e9f4,
+    0 0 25px #03e9f4,
+    0 0 50px #03e9f4,
+    0 0 100px #03e9f4;
+}
+
+.wrap {
+    float: left;
+    width: 30%;
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+}
+
+label{
+    position: relative;
+    background: red;
+    width: 175px;
+    display: table;
+    padding: 10px 10px;
+    color: #03e9f4;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 10px;
+    letter-spacing: 4px;
+    background: rgba(0,0,0,.5);
+}
+label:hover{
+    background: #03e9f4;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #03e9f4,
+    0 0 25px #03e9f4,
+    0 0 50px #03e9f4,
+    0 0 100px #03e9f4;
+}
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+div#show {
+    float: right;
+    width: 20%;
+    height:700px;
+    padding:20px;
+    position:relative;
+    border-radius:6px;
+    overflow: auto;
+}
+
+::-webkit-scrollbar{
+    width: 10px;
+}
+
+input[type="checkbox"] {
+    /*display:none;*/
+    display: block;
+}
+
+#show label,input{
+    display: block;
+}
+</style>
+<body>
+<div th:replace="~{Layout::html_content}"></div>
+<div style="margin-top: 60px"></div>
+<form th:action="@{/create}" enctype="multipart/form-data" method="post">
+    <div class="wrap">
+        <div class="search">
+            <div th:if="${message != null}">
+                <p class="text-warning">[[${message}]]</p>
+            </div>
+            <div>
+                <input type = "text" name = "name" class="searchTerm" placeholder="Please enter your name manga you will create." required autofocus>
+                <input type = "text" name = "content" class="searchTerm" placeholder="Please enter your content manga you will create." required autofocus>
+                <label for="file">Choose a files</label>
+                <input type="file" name="image" id="file" accept="image/png, image/jpeg"  class="inputfile" data-caption="{count} files selected" />
+            </div>
+            <button type="submit" class="submitButton">
+                <i class="fa">Create</i>
+            </button>
+        </div>
+    </div>
+    <div>
+        <div id="show">
+            <label for="type1">
+                <input type="checkbox" id="type1" name="type" th:value="1">Action
+            </label><br>
+
+            <label for="type2">
+                <input type="checkbox" id="type2" name="type" th:value="2">Adult
+            </label><br>
+
+            <label for="type3">
+                <input type="checkbox" id="type3" name="type" th:value="3">Adventure
+            </label><br>
+
+            <label for="type4">
+                <input type="checkbox" id="type4" name="type" th:value="4">Anime
+            </label><br>
+
+            <label for="type5">
+                <input type="checkbox" id="type5" name="type" th:value="5">Isekai
+            </label><br>
+
+            <label for="type6">
+                <input type="checkbox" id="type6" name="type" th:value="6">Comedy
+            </label><br>
+
+            <label for="type7">
+                <input type="checkbox" id="type7" name="type" th:value="7">Comic
+            </label><br>
+
+            <label for="type8">
+                <input type="checkbox" id="type8" name="type" th:value="8"> Demons
+            </label><br>
+
+            <label for="type9">
+                <input type="checkbox" id="type9" name="type" th:value="9"> Detective
+            </label><br>
+
+            <label for="type10">
+                <input type="checkbox" id="type10" name="type" th:value="10"> Doujishi
+            </label><br>
+
+            <label for="type11">
+                <input type="checkbox" id="type11" name="type" th:value="11"> Fantasy
+            </label><br>
+
+            <label for="type12">
+                <input type="checkbox" id="type12" name="type" th:value="12"> Harem
+            </label><br>
+
+
+            <label for="type13">
+                <input type="checkbox" id="type13" name="type" th:value="13"> Magic
+            </label><br>
+
+            <label for="type14">
+                <input type="checkbox" id="type14" name="type" th:value="14"> School life
+            </label><br>
+
+            <label for="type15">
+                <input type="checkbox" id="type15" name="type" th:value="15"> Shounen
+            </label><br>
+
+        </div>
+    </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<head th:replace="Layout::html_head">
+  <meta charset="UTF-8">
+  <title>Select manga upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<style th:replace="~{Layout::style_layout}"></style>
+  <style >
+    .btn2 {
+      background-color: DodgerBlue;
+      border: none;
+      color: white;
+      padding: 12px 16px;
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .btn2:hover {
+      background-color: RoyalBlue;
+    }
+    table, th, td {
+      border:1px solid black;
+
+    }
+    td{
+      height: 10px;
+      max-width: 600px;
+      min-width: 100px;
+      color: #03e9f4;
+    }
+    .btn3{
+      position: fixed;
+      top: 90%;
+      left: 90%;
+      font-size: 16px;
+    }
+  </style>
+
+<body>
+<div th:replace="~{Layout::html_content}"></div>
+<div style="margin-top: 60px"></div>
+  <table>
+    <tr style="color: #03e9f4;">
+      <th>Name</th>
+      <th>Picture manga</th>
+      <th>Content manga</th>
+      <th>Count chapter</th>
+      <th>Day create</th>
+      <th>Time</th>
+      <th></th>
+    </tr>
+    <th:block th:each="book:${list}">
+    <tr style="color: #03e9f4;">
+      <td style="max-width: 200px">
+        <form th:action="@{/selectbook_author}">
+          <a th:href="@{selectbook_author(id_book=${book.getId_list()})}"><span th:text="${book.getName_book()}"></span></a>
+        </form>
+      </td>
+      <td style="width: 200px"><img style="width:200px" th:src="@{${book.getImage()}}" /></td>
+      <td style="max-width: 450px"><span th:text="${book.getDescription()}"></span></td>
+        <td><span th:text="${book.getCount_chapter()}"></span></td>
+        <td><span th:text="${book.getDay()}"></span></td>
+        <td><span th:text="${book.getTime()}"></span></td>
+        <td>
+          <form th:action="@{/delete_book}" method="post">
+            <input type="hidden" name="id" th:value="${book.getId_list()}">
+            <button class="btn2" style="size: 10px" type="submit"><i class="fas fa-recycle"></i>DELETE BOOK</button>
+          </form>
+        </td>
+    </tr>
+    </th:block>
+  </table>
+
+  <form th:action="@{/add_newbook}">
+    <button type="submit" class="btn2 btn3"><i class="fa fa-plus"></i> New Book</button>
+  </form>
+
+</body>
+</html>

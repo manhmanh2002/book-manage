@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cosmo/bootstrap.min.css" />
+<head th:replace="~{Layout::html_head}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<style th:replace="~{Layout::style_layout}"></style>
+<style>
+html {
+    height: 100%;
+}
+body {
+    margin:0;
+    padding:0;
+    font-family: sans-serif;
+    background: linear-gradient(#141e30, #243b55);
+}
+
+.searchTerm {
+    width: 100%;
+    border: 3px solid #00B4CC;
+    padding: 15px;
+    height: 20px;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    color: #9DBFAF;
+}
+
+.searchTerm:focus{
+    color: #00B4CC;
+}
+
+.wrap {
+    width: 30%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.button-submit,
+label{
+    position: relative;
+    background: red;
+    width: 175px;
+    display: table;
+    padding: 10px 10px;
+    color: #03e9f4;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 10px;
+    letter-spacing: 4px;
+    background: rgba(0,0,0,.5);
+}
+.button-submit:hover,
+label:hover{
+    background: #03e9f4;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #03e9f4,
+    0 0 25px #03e9f4,
+    0 0 50px #03e9f4,
+    0 0 100px #03e9f4;
+}
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+}
+</style>
+
+<body>
+<div th:replace="~{Layout :: html_content}"></div>
+<div style="margin-top: 60px"></div>
+<form th:action="@{/createnewchapter}" enctype="multipart/form-data" method="post">
+
+    <div class="wrap">
+        <div th:if="${message != null}">
+            <p class="text-warning">[[${message}]]</p>
+        </div>
+        <div>
+            <input type = "text" name = "content" class="searchTerm" placeholder="Please enter your content chapter you will create.">
+            <input type = "number" name = "number" class="searchTerm" placeholder="Please enter your chapter number you will create." required autofocus>
+            <label for="file">Choose a files</label>
+            <input type="file" name="files" id="file" accept="image/png, image/jpeg"  class="inputfile" data-multiple-caption="{count} files selected" multiple />
+        </div>
+        <div>
+            <button type="submit" class="button-submit">
+                <i class="fa fa-add">Create</i>
+            </button>
+        </div>
+
+    </div>
+</form>
+</body>
+<script>
+    var inputs = document.querySelectorAll( '.inputfile' );
+    Array.prototype.forEach.call( inputs, function( input )
+    {
+        var label	 = input.nextElementSibling,
+            labelVal = label.innerHTML;
+
+        input.addEventListener( 'change', function( e )
+        {
+            var fileName = '';
+            if( this.files && this.files.length > 1 )
+                fileName = ( this.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.files.length );
+            else
+                fileName = e.target.value.split( '\\' ).pop();
+
+            if( fileName )
+                label.querySelector( 'span' ).innerHTML = fileName;
+            else
+                label.innerHTML = labelVal;
+        });
+    });
+</script>
+</html>

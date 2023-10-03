@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{Layout::html_head}"></head>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Read Manga</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<style th:replace="~{Layout::style_layout}"></style>
+<style>
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .selectchapter{
+    display: inline-block;
+    background: #F0F0F0;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  .btn {
+    border:2px solid #222;
+    -webkit-border-radius:4px;
+    border-radius:        4px;
+    box-shadow:none;
+    -webkit-background-clip: padding-box;
+    -moz-background-clip:    padding;
+    background-clip:         padding-box;
+    transition-property: background-color, color;
+    transition-duration: 1s;
+    transition-timing-function: ease-out;
+    text-align: left;
+  }
+
+  .btn-text {
+    padding:6px;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-weight:bold;
+    font-size:1.2em;
+    color:#FFF;
+  }
+
+  .btn-color {
+    background-color:#222;
+  }
+
+  .btn:hover {
+    cursor:pointer;
+    transition-property: background-color, color;
+    transition-duration: 1s;
+    transition-timing-function: ease-out;
+    color:#222;
+    background-color:#FFF;
+    border:2px solid #222;
+  }
+
+  .form{
+    display: inline-block;
+  }
+  .popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  /* The actual popup (appears on top) */
+  .popup .popuptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+  }
+
+  /* Popup arrow */
+  .popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+
+  .popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+    max-width: 160px;
+    max-height: 100px;
+    overflow:auto;
+  }
+
+  /* Add animation (fade in the popup) */
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }
+  .popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  /* The actual popup (appears on top) */
+  .popup .popuptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+  }
+
+  /* Popup arrow */
+  .popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+
+  .popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+    max-width: 160px;
+    max-height: 100px;
+    overflow:auto;
+  }
+
+  /* Add animation (fade in the popup) */
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }
+  .listmanga{
+    color: #F0F0F0;
+    list-style-type: none;
+    text-align: left;
+  }
+</style>
+<body>
+<div th:replace="~{Layout::html_content}"></div>
+<div style="margin-top: 60px"></div>
+<div class="book" >
+  <th:block th:each="book:${books}">
+    <div class="page-chapter" style="text-align: center;margin: auto 0;background: black">
+      <img style="max-width: 80%;min-width: 60%;height: auto" th:src="@{${book.getLink(id_book)}}" />
+    </div>
+  </th:block>
+  <div class="selectchapter">
+      <div th:if="${chapter.getPreChap() != chapter.getId_chapter()}" class="form">
+          <form th:action="@{/selectchapter}" class="form">
+              <button id="prev" type="submit" class="btn btn-text btn-color">
+                  <input type="hidden" name="id_manga" th:value="${chapter.book.getId_list()}">
+                  <input type="hidden" class="next" name="id_chapter" th:value="${chapter.getPreChap()}">
+                  Prev &raquo;
+              </button>
+          </form>
+      </div>
+
+    <div class="popup" onclick="myFunction()"><span th:text="${'Chap '+chapter.getNumber()+ ': ' + chapter.getContent()}"></span>
+      <span class="popuptext" id="myPopup">
+                <th:block th:each="selectchapter:${chapters}">
+                    <a class="listbook" th:href="@{selectchapter(id_book=${selectchapter.book.getId_list()},id_chapter=${selectchapter.getId_chapter()})}">
+                        <span th:text="${'Chap ' + selectchapter.getNumber() + ': ' + selectchapter.getContent()}"></span>
+                    </a>
+                    <br>
+                </th:block>
+            </span>
+    </div>
+    <div th:if="${chapter.getNextChap() != chapter.getId_chapter()}" class="form">
+        <form th:action="@{/selectchapter}" class="form">
+            <button id="next" type="submit" class="btn btn-text btn-color">
+                <input type="hidden" name="id_manga" th:value="${chapter.book.getId_list()}">
+                <input type="hidden" class="next" name="id_chapter" th:value="${chapter.getNextChap()}">
+                Next &raquo;
+            </button>
+        </form>
+    </div>
+
+  </div>
+</div>
+</body>
+<script>
+  function myFunction() {
+    var popup = document.getElementById("myPopup");
+    popup.classList.toggle("show");
+    document.getElementById("myPopup").style.display = "block";
+  }
+</script>
+</html>

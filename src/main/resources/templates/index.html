@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="~{Layout::html_head}">
+  <meta charset="UTF-8">
+  <title>Select manga upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<style th:replace="~{Layout::style_layout}"></style>
+<style>
+  #service2 {
+    display: flex;
+    flex-direction: column;
+    width: 182px;
+    height: auto;
+
+  }
+
+  #service {
+    display: flex;
+    flex-direction: column;
+    width: 182px;
+    height: auto;
+
+  }
+
+  .food-service {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 175px;
+    height: 400px;
+  }
+
+  .secondary-heading {
+    font-size: 15px;
+    display: inline-block;
+    width: 180px;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+  }
+
+
+  .box {
+    border: 2px solid white;
+    border-radius: 22px;
+    background-color: white;
+    box-shadow: 6px 21px 29px #9e9895;
+    width: 180px;
+    height: 360px;
+  }
+
+  .box img {
+    width: 150px;
+    height: 200px;
+    padding: 16px;
+    border-radius: 92px;
+  }
+  #list{
+    width: 100%;
+    float: left;
+  }
+  th {
+    border:1px solid #D4ADFC;
+
+  }
+  th, td{
+    height: 10px;
+    width: 100%;
+    color: #D4ADFC;
+  }
+  ::-webkit-scrollbar{
+    width: 10px;
+  }
+
+</style>
+<body>
+<div th:replace="~{Layout::html_content}"></div>
+<div id="list" style="height: 620px; text-align: center">
+  <ul style="display: flex;flex-wrap: wrap;">
+    <th:block th:each="book:${list_book}">
+      <a th:title="${book.getDescription()}" th:href="@{select_book(id_book=${book.getId_list()})}">
+        <p>
+        <ol>
+          <section id="service" >
+            <div class="food-service">
+              <div class="box">
+                <img th:src="@{${book.getImage()}}" style="text-align: center" alt="loading...">
+                <br>
+                <a th:href="@{select_book(id_book=${book.getId_list()})}" class="secondary-heading"> <span th:text="${book.getName_book()}"></span> </a>
+                <br>
+                <h2 class="secondary-heading" style="margin-left: 15px;">Have <span th:text="${book.getCount_chapter()}"></span> chap!</h2>
+              </div>
+            </div>
+          </section>
+        </ol>
+        </p>
+      </a>
+    </th:block>
+  </ul>
+</div>
+
+<div th:if="${id != null}">
+  <div  id="history" style="height: 630px; overflow: auto">
+    <table>
+      <tr>
+        <th style="position: fixed; width: 185px;height: 30px;top:90px">
+          History
+        </th>
+      </tr>
+      <th:block th:each="book:${history_book}">
+        <tr style="flex: 2 0 21%;">
+          <td>
+            <section id="service2" >
+              <div class="food-service">
+                <div class="box">
+                  <img th:src="@{${book.getImage()}}" alt="loading...">
+                  <br>
+                  <a th:href="@{select_book(id_book=${book.getId_book()})}" class="secondary-heading"> <span th:text="${book.getName()}"></span> </a>
+                  <br>
+                  <!--                            <h2 class="secondary-heading">Content: <span th:text="${manga.getContent()}"></span> </h2>-->
+                  <h2 class="secondary-heading">Have <span th:text="${book.getCountchapter()}"></span> chap!</h2>
+                </div>
+              </div>
+            </section>
+          </td>
+        </tr>
+      </th:block>
+    </table>
+  </div>
+</div>
+
+</body>

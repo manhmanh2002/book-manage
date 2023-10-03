@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{Layout::html_head}">
+  <meta charset="ISO-8859-1">
+  <title>Change avatar</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cosmo/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<style th:replace="Layout :: style_layout">
+</style>
+
+<style>
+  html {
+    height: 100%;
+  }
+  body {
+    margin:0;
+    padding:0;
+    font-family: sans-serif;
+    background: linear-gradient(#141e30, #243b55);
+  }
+  body {
+    margin:0;
+    padding:0;
+    font-family: sans-serif;
+    background: linear-gradient(#141e30, #243b55);
+  }
+
+  .upload .btn{
+    position: relative;
+    display: block;
+    padding: 10px 20px;
+    color: #03e9f4;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 10px;
+    letter-spacing: 4px;
+    background: rgba(0,0,0,.5);
+
+  }
+
+  .upload .btn:hover{
+    background: #03e9f4;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #03e9f4,
+    0 0 25px #03e9f4,
+    0 0 50px #03e9f4,
+    0 0 100px #03e9f4;
+  }
+
+  .column {  float: left;  width: 50%; height: 400px;  padding: 15px;}
+</style>
+
+<body>
+<div th:if="${message != null}">
+  <p class="text-warning">[[${message}]]</p>
+</div>
+<form  th:action="@{/savepicture}" th:object="${user}" method="post" enctype="multipart/form-data">
+  <div class = "upload" style="text-align: center">
+    <label>Photos: </label>
+    <input style="color: #F0F0F0" type="file" name="image" accept="image/png, image/jpeg" />
+    <div th:if="${user.getPhoto()!=null}">
+      <img style="width:auto;height:200px;" th:src="@{${user.getPhoto()}}" />
+    </div>
+    <button class="btn" type="submit">Save</button>
+  </div>
+</form>
+</body>

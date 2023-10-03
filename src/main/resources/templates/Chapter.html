@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" >
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<head th:replace="~{Layout::html_head}">
+  <meta charset="UTF-8">
+  <title>Select book upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Add icon library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<style th:replace="~{Layout::style_layout}"></style>
+<body>
+<div th:replace="~{Layout::html_content}"></div>
+<div id="info-book">
+  <div class="name">
+    <h1><span th:text="${book.getName_book()}"></span></h1>
+    <img style="max-width: 120px" th:src="@{${book.getImage()}}">
+  </div>
+  <div class="content" style="overflow: auto;max-height: 300px;position: absolute;max-width: 75%;right: 2%">
+    <h3 style="font-size: 16px">Author: <span th:text="${author}"></span></h3>
+    <h3 style="font-size: 14px;padding-right: 20px"><span th:text="${book.getDescription()}"></span></h3>
+  </div>
+</div>
+
+<div>
+  <table>
+    <tr>
+      <th>Chapter number</th>
+      <th>Content</th>
+      <th>Count page</th>
+      <th>Day create</th>
+      <th>Time</th>
+    </tr>
+    <th:block th:each="chapter:${chapters}">
+      <tr>
+        <td style="text-align: center; max-width: 200px"><a style="color: #03e9f4;list-style-type: none;text-decoration: none;" th:href="@{selectchapter(id_book=${chapter.book.getId_list()},id_chapter=${chapter.getId_chapter()})}"><span th:text="${'Chap ' + chapter.getNumber()}"></span></a></td>
+
+        <td>
+          <a style="color: #03e9f4;list-style-type: none;text-decoration: none;" th:href="@{selectchapter(id_book=${chapter.book.getId_list()},id_chapter=${chapter.getId_chapter()})}"><span th:text="${chapter.getContent()}"></span></a>
+        </td>
+        <td><span th:text="${chapter.getCount_chapter()}"></span></td>
+        <td><span th:text="${chapter.getDay()}"></span></td>
+        <td><span th:text="${chapter.getTime()}"></span></td>
+      </tr>
+    </th:block>
+  </table>
+</div>
+</body>
+</html>

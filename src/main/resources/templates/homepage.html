@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{Layout::html_head}">
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+
+</head>
+
+<style th:replace="~{Layout::style_layout}">
+</style>
+<style>
+    html {
+        height: 100%;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "UTM Bitsumishi Pro";
+        background: linear-gradient(#141e30, #243b55);
+    }
+
+    .column .btn {
+        display: block;
+        padding: 10px 20px;
+        color: #03e9f4;
+        font-size: 16px;
+        text-decoration: none;
+        text-transform: uppercase;
+        overflow: hidden;
+        transition: .5s;
+        margin-top: 10px;
+        letter-spacing: 4px;
+        background: rgba(0, 0, 0, .5);
+
+    }
+
+    .column .btn:hover {
+        background: #03e9f4;
+        color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 5px #03e9f4,
+        0 0 25px #03e9f4,
+        0 0 50px #03e9f4,
+        0 0 100px #03e9f4;
+    }
+
+    .btn2 {
+        width: 265px;
+    }
+
+    .btn3 {
+        width: 300px;
+    }
+
+    ul {
+        list-style-type: none;
+    }
+
+    ul li ul {
+        display: none;
+    }
+
+    ul li:hover ul {
+
+        display: block;
+        position: absolute;
+        top: 0;
+    }
+
+    .admin {
+        margin-left: -40px;
+    }
+
+    .manager {
+        margin-left: 200px;
+    }
+
+    .column {
+        float: left;
+        width: 50%;
+        height: 400px;
+        padding: 15px;
+    }
+</style>
+</head>
+<body>
+<div th:replace="~{Layout::html_content}"></div>
+<div style="text-align: center; margin-top: 60px">
+    <div th:if="${message != null}">
+        <p class="text-warning">[[${message}]]</p>
+    </div>
+
+
+    <div class="column">
+        <form th:action="@{/uploadphotos}" method="post">
+            <button class="btn btn2" type="submit">Change avatar</button>
+        </form>
+        <form th:action="@{/create_book}" th:if="${!user.getRole().name().equals('USER')}">
+            <button class="btn btn2" type="submit">Create book</button>
+        </form>
+        <form th:action="@{/book-reading}" method="post">
+            <button class="btn btn2" type="submit">Read book</button>
+        </form>
+        <form th:action="@{/change_password}" method="post">
+            <button class="btn btn2" type="submit">Change password</button>
+        </form>
+        <div th:if="${!user.getRole().name().equals('USER')}">
+            <ul>
+                <li style="position: relative;">
+                    <button class="btn btn2 admin" type="submit">I am Admin</button>
+                    <ul class="manager">
+                        <li>
+                            <form th:action="@{Admin_user}">
+                                <button
+                                        type="submit" class="btn btn3">User manager (ADMIN)
+                                </button>
+                            </form>
+                        </li>
+                        <li>
+                            <form th:action="@{Admin_book}">
+                                <button type="submit" class="btn btn3">Manga manager (ADMIN)</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+    </div>
+        <form th:action="@{/logout}" method="post">
+            <button class="btn btn2" type="submit">Logout</button>
+        </form>
+    </div>
+    <div th:if="${user.getPhoto()!=null}">
+        <img style="width:auto;height:200px;" th:src="@{${user.getPhoto()}}" alt="loading..."/>
+    </div>
+    <div class="column" style="text-align: left">
+        <div style="color:#03e9f4;">
+            Welcome <label th:text="${user.getName()}"> </label>
+            <br>
+            Gender: <label th:text="${user.getGender()}"></label>
+            <br>
+            Email: <label th:text="${user.getEmail()}"></label>
+            <br>
+        </div>
+    </div>
+</div>
+</body>
+</html>

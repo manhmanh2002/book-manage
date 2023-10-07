@@ -2,7 +2,7 @@
 <html>
 <head th:replace="~{Layout::html_head}">
   <meta charset="UTF-8">
-  <title>Select manga upload</title>
+  <title>Select book upload</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <style th:replace="~{Layout::style_layout}"></style>
@@ -72,10 +72,57 @@
   ::-webkit-scrollbar{
     width: 10px;
   }
+  ul li {
+    display: inline-block;
+    color: #5C469C;
+    padding: 10px 20px;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  ul li:hover {
+    background-color:#5C469C ;
+    color: #fff;
+  }
+
+  ul li:hover ul {display: flex;}
+  ul li ul {
+    position: absolute;
+    width: 150px;
+    display: none;
+  }
+  ul li ul li {
+    background: #fff;
+    display: block;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  a{
+    color: #5C469C;
+    font-size: 16px;
+  }
+  .box1 a:hover{
+    color: #fff;
+  }
 
 </style>
 <body>
 <div th:replace="~{Layout::html_content}"></div>
+<div style="margin-left: 60px;margin-top: 50px;" >
+  <ul class = "box1">
+    <li>
+      <a style="display: block">Category</a>
+      <ul style="overflow: auto; max-height: 400px; width: 800px;flex-wrap: wrap;text-align: center;">
+        <li style="display: flex;flex: 1 0 21%;"><a th:href="@{selectCategory(id_category=0)}">All Categories</a></li>
+        <th:block th:each="category:${categories}">
+          <li style="display: flex;flex: 1 0 21%;text-align: center;"><a th:href="@{selectCategory(id_category=${category.getId()})}"><span th:text="${category.getType_name()}"></span></a></li>
+        </th:block>
+
+      </ul>
+    </li>
+  </ul>
+</div>
 <div id="list" style="height: 620px; text-align: center">
   <ul style="display: flex;flex-wrap: wrap;">
     <th:block th:each="book:${list_book}">
@@ -116,10 +163,9 @@
                 <div class="box">
                   <img th:src="@{${book.getImage()}}" alt="loading...">
                   <br>
-                  <a th:href="@{select_book(id_book=${book.getId_book()})}" class="secondary-heading"> <span th:text="${book.getName()}"></span> </a>
+                  <a th:href="@{select_book(id_book=${book.getId_list()})}" class="secondary-heading"> <span th:text="${book.getName_book()}"></span> </a>
                   <br>
-                  <!--                            <h2 class="secondary-heading">Content: <span th:text="${manga.getContent()}"></span> </h2>-->
-                  <h2 class="secondary-heading">Have <span th:text="${book.getCountchapter()}"></span> chap!</h2>
+                  <h2 class="secondary-heading">Have <span th:text="${book.getCount_chapter()}"></span> chap!</h2>
                 </div>
               </div>
             </section>

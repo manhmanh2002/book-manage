@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface ChapterRepository extends JpaRepository<Chapter,Long> {
-    @Query("SELECT c FROM Chapter c WHERE c.id_chapter=?1 ORDER BY c.id_chapter")
+    @Query("SELECT c FROM Chapter c WHERE c.book.id_list=?1 ORDER BY c.id_chapter")
     public List<Chapter> showAllChapterById(Long idBook);
 
     @Transactional

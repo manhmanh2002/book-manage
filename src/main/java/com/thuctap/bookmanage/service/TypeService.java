@@ -21,7 +21,9 @@ public class TypeService {
             typeRepository.save(type);
         }
 
-
+    }
+    public Type findbyID(Long idtype){
+        return typeRepository.findByID(idtype);
     }
 
 }

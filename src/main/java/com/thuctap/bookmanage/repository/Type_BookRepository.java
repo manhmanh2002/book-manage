@@ -1,5 +1,6 @@
 package com.thuctap.bookmanage.repository;
 
+import com.thuctap.bookmanage.entity.Type;
 import com.thuctap.bookmanage.entity.Type_book;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;

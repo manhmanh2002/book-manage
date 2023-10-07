@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ChapterService {
@@ -64,14 +65,24 @@ public class ChapterService {
         return chapter;
     }
 
-    public List<Chapter> listChapter(Long id_manga) {
+    public List<Chapter> listChapter(Long id_book) {
         List<Chapter> list = new ArrayList<>();
-        Chapter chapter = chapterRepository.findFirstChapter(id_manga);
-        while (chapter.getNextChap() != chapter.getId_chapter()) {
+        Chapter chapter = chapterRepository.findFirstChapter(id_book);
+        if(Objects.nonNull(chapter)) {
+            while (chapter.getNextChap() != chapter.getId_chapter()) {
+                list.add(chapter);
+                chapter = chapterRepository.findChapterById(chapter.getNextChap());
+            }
             list.add(chapter);
-            chapter = chapterRepository.findChapterById(chapter.getNextChap());
         }
-        list.add(chapter);
         return list;
+    }
+
+    public List<Chapter> showAllChapterById(long l) {
+        return chapterRepository.showAllChapterById(l);
+    }
+
+    public Chapter findByChapterandID(long l, long l1) {
+        return chapterRepository.findByChapterandID(l,l1);
     }
 }

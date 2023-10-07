@@ -6,6 +6,7 @@ import com.thuctap.bookmanage.repository.*;
 import com.thuctap.bookmanage.service.BookService;
 import com.thuctap.bookmanage.service.ChapterService;
 import com.thuctap.bookmanage.service.DirService;
+import com.thuctap.bookmanage.service.TypeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
@@ -53,6 +54,8 @@ public class AuthorController {
     @Autowired
     private ChapterService chapterService;
 
+    @Autowired
+    private TypeService typeService;
     @RequestMapping("add_newbook")
     public String addNewBook(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -107,11 +110,12 @@ public class AuthorController {
                         name, 0, fileName, content, java.time.LocalDate.now(), java.time.LocalTime.now()));
                 String uploadDir = "data/" + newBook.getId_list();
                 FileUploadUtil.saveFile(uploadDir, fileName, file);
-                Type_book book = new Type_book();
+
                 if (checkboxValue.length != 0) {
                     for (String x : checkboxValue) {
+                        Type_book book = new Type_book();
                         book.setBook(bookRepository.findByID(newBook.getId_list()));
-                        book.setId(Long.parseLong(x));
+                        book.setType(typeService.findbyID(Long.parseLong(x)));
                         type_bookRepository.save(book);
                     }
                 }
@@ -131,8 +135,8 @@ public class AuthorController {
         String currentDirectory = System.getProperty("user.dir");
         String id_delete = request.getParameter("id");
         File file = new File(currentDirectory + "/data/" + id_delete);
-        dirService.deleteDir(file);
         bookService.deleteBook(Long.parseLong(id_delete));
+        dirService.deleteDir(file);
         bookManager(request, model);
         return "list_create_book";
     }
@@ -237,9 +241,11 @@ public class AuthorController {
         }
 
         ListBook book = bookRepository.findByID(Long.parseLong(id_book));
-
         book.setCount_chapter(book.getCount_chapter() + 1);
         bookRepository.save(book);
+        listchapter = chapterRepository.showAllChapterById(Long.parseLong(id_book));
+        model.addAttribute("id",id);
+        model.addAttribute("chapters", listchapter);
         return "chaptermanager";
     }
 
@@ -356,10 +362,8 @@ public class AuthorController {
         String id_delete = request.getParameter("id_chapter");
         String id_book = session.getAttribute("id_book").toString();
         Chapter chapter = chapterRepository.findChapterById(Long.parseLong(id_delete));
-
         String currentDirectory = System.getProperty("user.dir");
         File file = new File(currentDirectory + "/data/" + id_book + "/" + id_delete);
-        dirService.deleteDir(file);
         if (chapter.getNumber() == chapter.getPreChap()) {
             Chapter chapter_First = chapterRepository.findChapterById(chapter.getNextChap());
             chapter_First.setPreChap(chapter_First.getId_chapter());
@@ -378,10 +382,24 @@ public class AuthorController {
         bookService.deleteChapter(Long.parseLong(id_delete));
         ListBook book = bookRepository.findByID(chapter.getBook().getId_list());
         book.setCount_chapter(book.getCount_chapter() - 1);
+        dirService.deleteDir(file);
         bookRepository.save(book);
         select_book(request, model);
         return "chaptermanager";
     }
+    @PostMapping("/delete_page")
+    public String deletePageBookByAuthor(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        String id_delete = request.getParameter("id");
+        Picture pagedelete = pictureRepository.findpictureByID(Long.parseLong(id_delete));
+        bookService.deleteonepage(Long.parseLong(id_delete));
+        selectChapter(request, model);
+        String currentDirectory = System.getProperty("user.dir");
+        File file = new File(currentDirectory + pagedelete.getLink(session.getAttribute("id_book").toString()));
+        dirService.deleteDir(file);
+        return "setupchapter";
+    }
+
 
 
 }

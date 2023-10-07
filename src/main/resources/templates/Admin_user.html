@@ -8,73 +8,60 @@
 </head>
 <style th:replace="~{Layout::style_layout}"></style>
 <style>
-    html {
-        height: 100%;
-    }
-
-    body {
-        margin: 0;
-        padding: 0;
-    }
-
     .info {
-        height: 50px;
-        font-size: 20px;
+        color: #D4ADFC;
     }
 
     table {
+        border: 1px solid black;
         width: 100%;
         border-collapse: collapse;
-        margin-top: 50px;
     }
 
     th, td {
-        padding: 20px;
+        border: 1px solid black;
+        padding: 8px;
         text-align: center;
-        border-bottom: 3px solid #ddd;
+        max-width: 200px;
     }
 
     th {
         font-size: 20px;
         font-weight: normal;
+        color: #5C469C;
+        background: #D4ADFC;
     }
 
     img {
         width: 100px;
-        height: 100px;
-        object-fit: cover;
-        border-radius: 50%;
     }
-
 
     .btn2 {
         position: relative;
         display: block;
         padding: 5px 10px;
-        color: #03e9f4;
-        font-size: 8px;
+        color: #5C469C;
+        font-size: 14px;
         text-decoration: none;
         text-transform: uppercase;
         overflow: hidden;
         transition: .5s;
         margin-top: 10px;
-        letter-spacing: 4px;
-        background: rgba(0, 0, 0, .5);
+        background-color: #fff;
         width: 150px;
     }
 
     .btn2:hover {
-        background: #03e9f4;
+        background-color: #5C469C;
         color: #fff;
         border-radius: 5px;
-        box-shadow: 0 0 5px #03e9f4,
-        0 0 25px #03e9f4,
-        0 0 50px #03e9f4,
-        0 0 100px #03e9f4;
     }
+
+
 </style>
 <body>
 <div th:replace="~{Layout::html_content}"></div>
+
 <div>
     <table>
         <tr class="content" style="color: #5C469C; background: #D4ADFC">
@@ -102,16 +89,16 @@
                 </td>
                 <td>
                     <form th:if="${user.getRole().name().equals('USER') || user.getRole().name().equals('ADMIN')}" th:action="@{uplevel}" method="post">
-                        <input type="hidden" name="id_user" th:value="${user.getId_user()}">
+                        <input type="hidden" name="id" th:value="${user.getId_user()}">
                         <button class="btn2" type="submit">Up <i class="fa fa-level-up" aria-hidden="true"></i></button>
                     </form>
                     <form th:if="${user.getRole().name().equals('SUPERADMIN') || user.getRole().name().equals('ADMIN')}" th:action="@{downlevel}" method="post">
-                        <input type="hidden" name="id_user" th:value="${user.getId_user()}">
+                        <input type="hidden" name="id" th:value="${user.getId_user()}">
                         <button class="btn2" type="submit">Down <i class="fa fa-level-down" aria-hidden="true"></i>
                         </button>
                     </form>
                     <form th:action="@{delete_user}" method="post">
-                        <input type="hidden" name="id_user" th:value="${user.getId_user()}">
+                        <input type="hidden" name="id" th:value="${user.getId_user()}">
                         <button class="btn2" type="submit">Delete User <i class="fa fa-ban" aria-hidden="true"></i>
                         </button>
                     </form>

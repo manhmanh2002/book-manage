@@ -16,6 +16,10 @@
     margin: 0;
     box-sizing: border-box;
   }
+  body{
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+  }
 
   .selectchapter{
     display: inline-block;
@@ -171,7 +175,7 @@
     from {opacity: 0;}
     to {opacity:1 ;}
   }
-  .listmanga{
+  .listbook{
     color: #F0F0F0;
     list-style-type: none;
     text-align: left;
@@ -190,7 +194,7 @@
       <div th:if="${chapter.getPreChap() != chapter.getId_chapter()}" class="form">
           <form th:action="@{/selectchapter}" class="form">
               <button id="prev" type="submit" class="btn btn-text btn-color">
-                  <input type="hidden" name="id_manga" th:value="${chapter.book.getId_list()}">
+                  <input type="hidden" name="id_book" th:value="${chapter.book.getId_list()}">
                   <input type="hidden" class="next" name="id_chapter" th:value="${chapter.getPreChap()}">
                   Prev &raquo;
               </button>
@@ -210,7 +214,7 @@
     <div th:if="${chapter.getNextChap() != chapter.getId_chapter()}" class="form">
         <form th:action="@{/selectchapter}" class="form">
             <button id="next" type="submit" class="btn btn-text btn-color">
-                <input type="hidden" name="id_manga" th:value="${chapter.book.getId_list()}">
+                <input type="hidden" name="id_book" th:value="${chapter.book.getId_list()}">
                 <input type="hidden" class="next" name="id_chapter" th:value="${chapter.getNextChap()}">
                 Next &raquo;
             </button>

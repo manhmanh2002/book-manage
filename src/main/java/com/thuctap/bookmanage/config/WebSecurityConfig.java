@@ -46,7 +46,10 @@ public class WebSecurityConfig {
                                 "/data/**",
                                 "/user-photos/**",
                                 "/selectbook_author",
-                                "/selectchapter"
+                                "/selectchapter/**",
+                                "/index",
+                                "/hot",
+                                "/reset_password"
                         )
                         .permitAll()
                         .anyRequest().authenticated()

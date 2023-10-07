@@ -5,12 +5,19 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cosmo/bootstrap.min.css" />
 <head th:replace="~{Layout::html_head}">
     <meta charset="UTF-8">
-    <title>Select manga upload</title>
+    <title>Select book upload</title>
     <meta name="viewport">
 
 </head>
 <style th:replace="~{Layout::style_layout}"></style>
 <style>
+    html{
+        height: 100%;
+    }
+    body{
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
     #service2 {
         display: flex;
         flex-direction: column;
@@ -65,17 +72,19 @@
         float: left;
     }
     #history{
+        color: #5C469C;
         width: 200px;
         float: left;
+        text-align: center;
     }
     th {
-        border:1px solid #00b4cc;
+        border:1px solid #fff;
 
     }
     th, td{
         height: 10px;
         width: 100%;
-        color: #00B4CC;
+        color: #fff;
     }
     ::-webkit-scrollbar{
         width: 10px;
@@ -88,20 +97,14 @@
         display: inline-block;
     }
 
-    ul li {display: inline-block;color: #03e9f4;}
+    ul li {display: inline-block;color: #D4ADFC;text-align: center;}
     ul li:hover {
-        background: #03e9f4;
+        background: #5C469C;
         color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 0 5px #03e9f4,
-        0 0 25px #03e9f4,
-        0 0 50px #03e9f4,
-        0 0 100px #03e9f4;
     }
 
     ul li:hover ul {display: flex;}
     ul li ul {
-
         position: absolute;
         width: 150px;
         display: none;
@@ -110,18 +113,16 @@
         background: rgba(0,0,0,.5);
         display: block;
         text-decoration: none;
+        text-align: center;
     }
-    ul li ul li a {display:block;color: #03e9f4;}
+    ul li ul li a {display:block;color: #5C469C;}
     ul li ul li:hover,
     ul li ul li:hover a{
-        background: #03e9f4;
+        background: #5C469C;
         text-decoration: none;
         color: #fff;
         border-radius: 5px;
-        box-shadow: 0 0 5px #03e9f4,
-        0 0 25px #03e9f4,
-        0 0 50px #03e9f4,
-        0 0 100px #03e9f4;}
+        }
     ul li ul li a:hover{text-decoration: none;color: #fff;}
 </style>
 
@@ -159,7 +160,7 @@
     <div  id="history" style="height: 630px; overflow: auto">
         <table>
             <tr>
-                <th style="position: fixed; width: 185px;height: 30px;top:90px">
+                <th style="position: fixed; width: 185px;height: 30px;top:150px">
                     History
                 </th>
             </tr>
@@ -174,8 +175,8 @@
                                         <br>
                                         <a th:href="@{select_book(id_book=${book.getId_list()})}" class="secondary-heading"> <span th:text="${book.getName_book()}"></span> </a>
                                         <br>
-                                        <!--                            <h2 class="secondary-heading">Content: <span th:text="${manga.getContent()}"></span> </h2>-->
-                                        <h2 class="secondary-heading">Have <span th:text="${book.getCount_chapter()}"></span> chap!</h2>
+                                        <!--                            <h2 class="secondary-heading">Content: <span th:text="${book.getContent()}"></span> </h2>-->
+                                        <h2 class="secondary-heading" style="color: #D4ADFC">Have <span  th:text="${book.getCount_chapter()}"></span> chap!</h2>
                                     </div>
                                 </div>
                             </section>

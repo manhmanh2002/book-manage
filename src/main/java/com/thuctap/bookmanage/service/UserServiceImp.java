@@ -8,11 +8,15 @@ import com.thuctap.bookmanage.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 
 import javax.mail.MessagingException;
@@ -23,61 +27,61 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+
 public class UserServiceImp implements UserService {
     @Autowired
-    private final UserRepository userRepository;
-
-    private final EmailService emailSender;
-
+    private UserRepository userRepository;
+    @Autowired
+    private EmailService emailSender;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Override
     public User checkEmail(String email){
         return userRepository.findByEmail(email);
     }
+    @Override
     public User findUser(long id) {
         return userRepository.findByID(id);
     }
-
-    public void updateResetPasswordToken(String token, String email) throws UserNotFoundException {
-        User user = userRepository.findByEmail(email);
-        if(user != null){
-            user.setToken(token);
-            userRepository.save(user);
-        }else throw new UserNotFoundException("Could not find any user " + email);
-    }
+    @Override
     public User get(String resetPasswordToken){
         return userRepository.findByToken(resetPasswordToken);
     }
 
+    @Override
+    public boolean oldPasswordValid(User user, String oldPass) {
+        return passwordEncoder.matches(oldPass,user.getPassword());
+    }
+
+    @Override
     public void updatePassword(User user, String newPassword){
-        user.setPassword(newPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setNew_pass(null);
         user.setToken(null);
         userRepository.save(user);
     }
-    public void set_new_password(User user, String newPassword){
-        user.setNew_pass(newPassword);
-        userRepository.save(user);
-    }
 
-    public User changePass(User user,String email ,String oldpass,String newpass, HttpServletRequest request){
+    @Override
+    public User changePass(String email,HttpServletRequest request){
         String token = UUID.randomUUID().toString();
-        user = userRepository.findByEmail(email);
-        if(user.getPassword().equals(oldpass)){
-            user.setNew_pass(newpass);
-            user.setToken(token);
-            String link = Utility.getSiteURL(request) + "/change_passwordSuccess?token=" + user.getToken();
-            sendEmail(user, sendChangePassEmail(link));
-            userRepository.save(user);
-        }
+        User user = userRepository.findByEmail(email);
+        user.setToken(token);
+        String link = Utility.getSiteURL(request) + "/change_passwordSuccess?token=" + user.getToken();
+        sendEmail(user, sendChangePassEmail(link));
+        userRepository.save(user);
         return user;
     }
-    public User forgotPass(User user,String email,HttpServletRequest request) {
+    @Override
+    public User forgotPass(String email,HttpServletRequest request) {
         String token = UUID.randomUUID().toString();
-        user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
+        user.setToken(token);
         String link = Utility.getSiteURL(request) + "/reset_password?token=" + user.getToken();
         sendEmail(user, sendResetPassEmail(link));
         userRepository.save(user);
         return user;
     }
+
 
     void sendEmail(User user, String link) {
         try {

@@ -1,73 +1,110 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <head th:replace="~{Layout::html_head}">
     <meta charset="UTF-8">
-    <title>Select manga upload</title>
+    <title>Select book upload</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <style th:replace="~{Layout::style_layout}"></style>
 <style >
-    .btn2 {
-        background-color: DodgerBlue;
+    html{
+        height: 100%;
+    }
+    body{
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+    /* Use a class selector instead of inline styles */
+    .custom-table {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    .custom-table th,
+    .custom-table td {
+        border: 1px solid black;
+        color: #fff;
+        padding: 8px;
+        text-align: center;
+        max-width: 200px;
+    }
+
+    .custom-table img {
+        width: 100px;
+    }
+    .custom-table th {
+        font-size: 20px;
+        font-weight: normal;
+        color: #5C469C;
+        background: #D4ADFC;
+    }
+
+    .custom-button {
+        color: #5C469C;
+        font-size: 14px;
+        text-decoration: none;
+        text-transform: uppercase;
+        overflow: hidden;
+        transition: 0.5s;
+        margin: 5px;
+        padding: 10px 20px;
+        background-color: #fff;
         border: none;
-        color: white;
-        padding: 12px 16px;
-        font-size: 10px;
+        border-radius: 5px;
         cursor: pointer;
     }
-    .btn2:hover {
-        background-color: RoyalBlue;
-    }
-    table, th, td {
-        border:1px solid black;
 
+    .custom-button:hover {
+        background-color: #5C469C;
+        color: #fff;
     }
-    td{
-        height: 10px;
-        max-width: 600px;
-        min-width: 100px;
-        color: #03e9f4;
+
+    /* Add some space between the table and the elements above */
+    .margin-top-60px {
+        margin-top: 60px;
     }
-    .btn3{
-        position: fixed;
-        top: 90%;
-        left: 90%;
-        font-size: 16px;
+    a{
+        color: #D4ADFC;
     }
+    a:hover{
+        color: #fff;
+    }
+
 </style>
-
 <body>
 <div th:replace="~{Layout::html_content}"></div>
-<div style="margin-top: 60px"></div>
-<table>
-    <tr style="color: #03e9f4;">
+<div class="margin-top-60px"></div>
+<table class="custom-table">
+    <tr>
         <th>Name</th>
-        <th>Picture manga</th>
-        <th>Content manga</th>
+        <th>Picture book</th>
+        <th>Content book</th>
         <th>Count chapter</th>
         <th>Day create</th>
         <th>Time</th>
         <th></th>
     </tr>
     <th:block th:each="book:${list}">
-        <tr style="color: #03e9f4;">
-            <td style="max-width: 200px">
+        <tr>
+            <td>
                 <form th:action="@{/selectbook_author}">
-                    <a th:href="@{selectbook_author(id_book=${book.getId_list()})}"><span th:text="${book.getName_book()}"></span></a>
+                    <a th:href="@{selectbook_author(id_book=${book.getId_list()})}" th:text="${book.getName_book()}"></a>
                 </form>
             </td>
-            <td style="width: 200px"><img style="width:200px" th:src="@{${book.getImage()}} " alt="loading..." /></td>
-            <td style="max-width: 450px"><span th:text="${book.getDescription()}"></span></td>
+            <td><img th:src="@{${book.getImage()}} " alt="loading..." /></td>
+            <td><span th:text="${book.getDescription()}"></span></td>
             <td><span th:text="${book.getCount_chapter()}"></span></td>
             <td><span th:text="${book.getDay()}"></span></td>
             <td><span th:text="${book.getTime()}"></span></td>
             <td>
                 <form th:action="@{/delete_book_admin}" method="post">
-                    <input type="hidden" name="id" th:value="${book.getId_list()}">
-                    <button class="btn2" style="size: 10px" type="submit"><i class="fas fa-recycle"></i>DELETE MANGA</button>
+                    <input type="hidden" name="id_book" th:value="${book.getId_list()}">
+                    <button class="custom-button" type="submit">
+                        DELETE BOOK
+                    </button>
                 </form>
             </td>
         </tr>

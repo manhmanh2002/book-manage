@@ -3,10 +3,10 @@ package com.thuctap.bookmanage.controller;
 import com.thuctap.bookmanage.entity.*;
 import com.thuctap.bookmanage.repository.*;
 import com.thuctap.bookmanage.service.BookService;
-import com.thuctap.bookmanage.service.TypeService;
+import com.thuctap.bookmanage.service.ChapterService;
+import com.thuctap.bookmanage.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,7 +35,11 @@ public class BookController {
     @Autowired
     private PictureRepository pictureRepository;
     @Autowired
-    private TypeService typeService;
+    private ChapterService chapterService;
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+    @Autowired
+    private UserService userService;
     @RequestMapping("/book-reading")
     public String ReadBook( HttpServletRequest request, Model model){
         HttpSession session = request.getSession();
@@ -45,7 +49,7 @@ public class BookController {
         List<Type> list_type = typeRepository.showAllCategory();
         model.addAttribute("categories",list_type);
         if(session.getAttribute("id") != null){
-            model.addAttribute("history_manga",bookService.showHistory(request));
+            model.addAttribute("history_book",bookService.showHistory(request));
             model.addAttribute("id",session.getAttribute("id").toString());
             return "list_book";
         }
@@ -109,14 +113,26 @@ public class BookController {
                     book.setCount_view(book.getCount_view() + 1);
                     list_bookRepository.save(book);
                 }
-                historyRepository.save(new History(Long.parseLong(id_user),Long.parseLong(id), java.time.LocalDate.now(),java.time.LocalTime.now()));
+                History history1 = new History();
+                history1.setBook(bookService.findById(Long.parseLong(id)));
+                history1.setUser(userService.findUser(Long.parseLong(id_user)));
+                history1.setDay(java.time.LocalDate.now());
+                history1.setTime(java.time.LocalTime.now());
+                historyRepository.save(history1);
             }
         }
         book = list_bookRepository.findByID(Long.parseLong(id));
         if(session.getAttribute("id")!=null){
             model.addAttribute("id",session.getAttribute("id"));
+
+            Favorite favorite = favoriteRepository.findByIdUserAndIdBook(Long.parseLong(session.getAttribute("id").toString()),Long.parseLong(id));
+            if(Objects.nonNull(favorite)){
+                model.addAttribute("follow",1);
+            }else{
+                model.addAttribute("follow",0);
+            }
         }
-        List<Chapter> list = listChapter(Long.parseLong(id));
+        List<Chapter> list = chapterService.listChapter(Long.parseLong(id));
 
         model.addAttribute("book",book);
         model.addAttribute("chapters",list);
@@ -124,7 +140,7 @@ public class BookController {
         return "Chapter";
     }
 
-    @RequestMapping("selectchapter")
+    @RequestMapping("/selectchapter")
     public String selectChapter(HttpServletRequest request,Model model){
         HttpSession session = request.getSession();
         String id_chapter = request.getParameter("id_chapter");
@@ -137,7 +153,7 @@ public class BookController {
             id_book = request.getParameter("id_book");
         }
 
-        List<Chapter> chapters = listChapter(Long.parseLong(id_book));
+        List<Chapter> chapters = chapterService.listChapter(Long.parseLong(id_book));
 
         Chapter chap = chapterRepository.findByChapterandID(Long.parseLong(id_book), Long.parseLong(id_chapter));
         if(session.getAttribute("id") != null){
@@ -151,22 +167,74 @@ public class BookController {
         model.addAttribute("id",session.getAttribute("id"));
         return "read_book";
     }
-
-    public List<Chapter> listChapter(Long id_book){
-        List<Chapter> list = new ArrayList<>();
-        Chapter chapter = chapterRepository.findFirstChapter(id_book);
-        if(Objects.nonNull(chapter)){
-            while(chapter.getNextChap() != chapter.getId_chapter()){
-                list.add(chapter);
-                chapter = chapterRepository.findChapterById(chapter.getNextChap());
-            }
-            list.add(chapter);
+    @RequestMapping("/hot")
+    public String hotBook(Model model,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        List<Type> list_type = typeRepository.showAllCategory();
+        model.addAttribute("categories",list_type);
+        model.addAttribute("list_book",bookService.showHotBook());
+        if(session.getAttribute("id")!=null){
+            model.addAttribute("id",session.getAttribute("id"));
+            model.addAttribute("history_book",bookService.showHistory(request));
+            return "list_book";
         }
-        return list;
+        return "/index";
+
     }
 
+    @RequestMapping("favorite")
+    public String favorite(HttpServletRequest request,Model model){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("id") == null){
+            model.addAttribute("message","You need login to user function!!!");
+            model.addAttribute("user",new User());
+            return "/login";
+        }
+        Long id = Long.parseLong(session.getAttribute("id").toString());
+        model.addAttribute("id", session.getAttribute("id"));
+        List<Type> list_type = typeRepository.showAllCategory();
+        model.addAttribute("categories",list_type);
+        model.addAttribute("history_book",bookService.showHistory(request));
+        List<Long> list_id = favoriteRepository.findListBookFavorite(id);
+        List<ListBook> list_book = new ArrayList<>();
+        for(Long x:list_id){
+            list_book.add(list_bookRepository.findByID(x));
+        }
+        model.addAttribute("list_book",list_book);
+        return "list_book";
+    }
+    @RequestMapping("addtoFavorite")
+    public String addtoFavorite(HttpServletRequest request, Model model){
+        HttpSession session = request.getSession();
+        Long id = Long.parseLong(session.getAttribute("id").toString());
+        String id_book = request.getParameter("id_book");
+        Favorite favorite = favoriteRepository.findByIdUserAndIdBook(id,Long.parseLong(id_book));
+        if(Objects.nonNull(favorite)){
+            favorite.setDay(java.time.LocalDate.now());
+            favorite.setTime(java.time.LocalTime.now());
+            favoriteRepository.save(favorite);
+        }else{
+            Favorite favoriteNew = new Favorite();
+            favoriteNew.setUser(userService.findUser(id));
+            favoriteNew.setBook(bookService.findById(Long.parseLong(id_book)));
+            favoriteNew.setDay(java.time.LocalDate.now());
+            favoriteNew.setTime(java.time.LocalTime.now());
+            favoriteRepository.save(favoriteNew);
+        }
+        select_book(request, model);
+        return "Chapter";
+    }
 
-
-
-
+    @RequestMapping("deletefromFavorite")
+    public String deletefromFavorite(HttpServletRequest request, Model model){
+        HttpSession session = request.getSession();
+        Long id = Long.parseLong(session.getAttribute("id").toString());
+        String id_book = request.getParameter("id_book");
+        Favorite favorite = favoriteRepository.findByIdUserAndIdBook(id,Long.parseLong(id_book));
+        if(Objects.nonNull(favorite)){
+            favoriteRepository.deleteFavoriteByIdUserAndIdBook(id,Long.parseLong(id_book));
+        }
+        select_book(request, model);
+        return "Chapter";
+    }
 }

@@ -13,23 +13,25 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
 @Service
 public class BookService {
     @Autowired
-    private final BookRepository bookRepository;
+    private BookRepository bookRepository;
 
     @Autowired
-    private final ChapterRepository chapterRepository;
+    private ChapterRepository chapterRepository;
 
     @Autowired
-    private final HistoryRepository historyRepository;
+    private HistoryRepository historyRepository;
 
     @Autowired
-    private final Type_BookRepository type_bookRepository;
+    private Type_BookRepository type_bookRepository;
 
     @Autowired
-    private final PictureRepository pictureRepository;
+    private PictureRepository pictureRepository;
+
+    @Autowired
+    private FavoriteRepository favoriteRepository;
 
     public List<ListBook> showAllBook() {
         return bookRepository.showAllBook();
@@ -58,31 +60,26 @@ public class BookService {
     public void saveBook(ListBook book) {
         bookRepository.save(book);
     }
-    @Transactional
-    @Modifying
+
     public void deleteBook(Long id_book) {
+        favoriteRepository.deleteFavoriteByIDBook(id_book);
+        historyRepository.deleteHistoryByIdBook(id_book);
+        type_bookRepository.deleteByIdBook(id_book);
         List<Chapter> chapters = chapterRepository.showAllChapterById(id_book);
+        System.out.println(chapters);
         for (Chapter chapter : chapters) {
             deleteChapter(chapter.getId_chapter());
         }
-        type_bookRepository.deleteByIdBook(id_book);
         bookRepository.deleteBookById(id_book);
     }
-    @Transactional
-    @Modifying
+
     public void deleteChapter(Long id_chapter) {
         List<Picture> list = pictureRepository.showBook(id_chapter);
         for (Picture picture : list) {
-            deleteOnePage(picture.getId());
+            deleteonepage(picture.getId());
         }
         chapterRepository.deleteChapterById(id_chapter);
     }
-    @Transactional
-    @Modifying
-    public void deleteOnePage(Long id_page) {
-        pictureRepository.deleteOnePageById(id_page);
-    }
-
     public List<ListBook> showHistory(HttpServletRequest request){
         HttpSession session = request.getSession();
         List<Long> list = historyRepository.findByIduser(Long.parseLong(session.getAttribute("id").toString()));
@@ -92,6 +89,15 @@ public class BookService {
         }
         return listBooks;
     }
+    public void deleteonepage(Long id_page) {
+        pictureRepository.deleteOnePageById(id_page);
+    }
 
+    public List<ListBook> showHotBook() {
+        return bookRepository.showHotBook();
+    }
 
+    public ListBook findByID(Long idList) {
+        return bookRepository.findByID(idList);
+    }
 }

@@ -13,11 +13,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -44,7 +44,6 @@ public class User_Controller {
     private TypeRepository typeRepository;
     @Autowired
     private TypeService typeService;
-
 
     @RequestMapping("/homepage")
     public String HomePage(HttpServletRequest request, Model model){
@@ -81,19 +80,14 @@ public class User_Controller {
         return "login";
     }
     @GetMapping("/signup")
-    public String login(@ModelAttribute("user") User oauthUser , Model model, HttpServletRequest request,Principal principal) {
+    public String login(Model model, HttpServletRequest request, Principal principal) {
         HttpSession session = request.getSession();
-        oauthUser = userRepository.findByEmail(principal.getName());
-        if(oauthUser.getEnable().name().equals("TRUE")) {
-            if (Objects.nonNull(oauthUser)) {
+        User oauthUser = userRepository.findByEmail(principal.getName());
+        if(oauthUser.getEnable().equals(Enable.TRUE)) {
                 model.addAttribute("id", String.valueOf(oauthUser.getId_user()));
                 session.setAttribute("id", String.valueOf(oauthUser.getId_user()));
                 model.addAttribute("user", oauthUser);
                 return "homepage";
-            } else {
-                model.addAttribute("message", "The username or password is incorrect!");
-                return "login";
-            }
         }else {
             model.addAttribute("message", "The account is disable!");
             return "login";
@@ -101,25 +95,34 @@ public class User_Controller {
     }
     @RequestMapping(value = "/change_password")
     public String changePassword(HttpServletRequest request, Model model){
-        User user = new User();
-        model.addAttribute("user",user);
+        HttpSession session = request.getSession();
+        String x = session.getAttribute("id").toString();
+        model.addAttribute("id", String.valueOf(x));
         return "change_password";
     }
     @PostMapping(value = "/change_your_password")
-    public String processChangePassword(@Valid @ModelAttribute("user") User user, BindingResult result, Model model,HttpServletRequest request){
+    public String processChangePassword(Model model,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String x = session.getAttribute("id").toString();
+        User user = userService.findUser(Long.parseLong(x));
         String newPass = request.getParameter("password");
-        String email = request.getParameter("email");
         String oldPass = request.getParameter("old_password");
-        userService.changePass(user,email,oldPass,newPass,request);
-        model.addAttribute("message", "Check your email to confirm account!");
-        return "change_password";
+        if(userService.oldPasswordValid(user,oldPass)){
+            userService.changePass(user.getEmail(), request);
+            user.setNew_pass(newPass);
+            userRepository.save(user);
+            model.addAttribute("message","Please check mail to confirm change password!!!");
+        }else {
+            model.addAttribute("message","Wrong pass");
+        }
+        return "Close";
     }
     @GetMapping("change_passwordSuccess")
     public String ChangePasswordSuccess(@Param(value = "token") String token, Model model) throws UserNotFoundException {
         User user = userService.get(token);
         if(user != null){
             userService.updatePassword(user,user.getNew_pass());
-            user.setNew_pass("");
+
             userRepository.save(user);
         }else{
             model.addAttribute("title","Reset your password!");
@@ -141,8 +144,7 @@ public class User_Controller {
             return "redirect:/register?error_email";
         } else {
             authenticationService.signUp(user,request);
-            model.addAttribute("message", "Check your email to confirm account!");
-            return "login";
+            return "Close";
         }
 
     }
@@ -153,7 +155,6 @@ public class User_Controller {
             user.setEnable(Enable.TRUE);
             user.setToken(null);
             userRepository.save(user);
-
         }
         return "confirm_account";
     }
@@ -170,10 +171,10 @@ public class User_Controller {
             model.addAttribute("message","Email is incorrect!");
             return "Forgot_Password_Form";
         }
-        userService.forgotPass(user,email,request);
+        userService.forgotPass(email,request);
         model.addAttribute("message","Please check mail to confirm change password!!!");
 
-        return "Forgot_Password_Form";
+        return "Close";
     }
     @GetMapping("/reset_password")
     public String showResetPasswordForm(@Param(value = "token") String token, Model model){

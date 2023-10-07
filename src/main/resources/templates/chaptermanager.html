@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <head th:replace="~{Layout::html_head}">
     <meta charset="UTF-8">
-    <title>Select manga upload</title>
+    <title>Select book upload</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Add icon library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -12,28 +12,65 @@
 <style th:replace="~{Layout::style_layout}"></style>
 <style>
     .btn2 {
-        background-color: DodgerBlue;
+        color: #5C469C;
+        font-size: 14px;
+        text-decoration: none;
+        text-transform: uppercase;
+        overflow: hidden;
+        transition: 0.5s;
+        margin: 5px;
+        padding: 10px 20px;
+        background-color: #fff;
         border: none;
-        color: white;
-        padding: 12px 16px;
-        font-size: 16px;
+        border-radius: 5px;
         cursor: pointer;
     }
-    .btn2{
-        background-color: RoyalBlue;
+    .btn2:hover {
+        background-color: #5C469C;
+        color: #fff;
     }
-    table, th, td {
-        border:1px solid black;
+    table {
+        border: 1px solid black;
+        width: 100%;
+        border-collapse: collapse;
     }
-    td{
-        height: 10px;
-        width: 100px;
+
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+        max-width: 200px;
+    }
+
+    th {
+        font-size: 20px;
+        font-weight: normal;
+        color: #5C469C;
+        background: #D4ADFC;
     }
     .btn3{
+        color: #5C469C;
+        font-size: 14px;
+        text-decoration: none;
+        text-transform: uppercase;
+        overflow: hidden;
+        transition: 0.5s;
+        margin: 5px;
+        padding: 10px 20px;
+        background-color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
         position: fixed;
         top: 90%;
         left: 90%;
-        font-size: 16px;
+    }
+    a {
+        color: #D4ADFC;
+    }
+
+    a:hover {
+        color: #fff;
     }
 </style>
 
@@ -41,7 +78,7 @@
 <div th:replace="~{Layout :: html_content}"></div>
 <div style="margin-top: 60px"></div>
 <table>
-    <tr style="color: #03e9f4;">
+    <tr>
         <th>Chapter number</th>
         <th>Content</th>
         <th>Count page</th>
@@ -52,16 +89,16 @@
         <th></th>
     </tr>
     <th:block th:each="chapter:${chapters}">
-        <tr style="color: #03e9f4;">
+        <tr>
             <td>
                 <a style="text-decoration: none;" th:href="@{selectchapter_author(id_book=${id_book},id_chapter=${chapter.getId_chapter()})}">Chap <span th:text="${chapter.getNumber()}" ></span></a>
             </td>
             <td>
                 <a style="text-decoration: none;" th:href="@{selectchapter_author(id_book=${id_book},id_chapter=${chapter.getId_chapter()})}"><span th:text="${chapter.getContent()}"></span></a>
             </td>
-            <td><span th:text="${chapter.getCount_chapter()}"></span></td>
-            <td><span th:text="${chapter.getDay()}"></span></td>
-            <td><span th:text="${chapter.getTime()}"></span></td>
+            <td><span style="color: #ffffff" th:text="${chapter.getCount_chapter()}"></span></td>
+            <td><span style="color: #ffffff" th:text="${chapter.getDay()}"></span></td>
+            <td><span style="color: #ffffff" th:text="${chapter.getTime()}"></span></td>
             <td>
                 <form th:action="@{/delete_chapter}" method="post">
                     <input type="hidden" name="id_chapter" th:value="${chapter.getId_chapter()}">

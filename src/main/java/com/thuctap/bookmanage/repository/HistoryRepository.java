@@ -11,19 +11,19 @@ import java.util.List;
 
 @Repository
 public interface HistoryRepository extends JpaRepository<History,Long> {
-    @Query("SELECT c FROM History c WHERE c.id_user=?1 AND c.id_book=?2")
-    History findByIduserAndIdbook(Long id_user,Long id_manga);
+    @Query("SELECT c FROM History c WHERE c.user.id_user=?1 AND c.book.id_list=?2")
+    History findByIduserAndIdbook(Long id_user,Long id_list);
 
-    @Query("SELECT c.id_book FROM History c WHERE c.id_user=?1 order by c.day DESC ,c.time DESC ")
-    List<Long> findByIduser(Long id);
+    @Query("SELECT c.book.id_list FROM History c WHERE c.user.id_user=?1 order by c.day DESC ,c.time DESC ")
+    List<Long> findByIduser(Long id_user);
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM History c WHERE c.id_user=?1 OR c.id_book=?2")
-    void deleteHistoryByIdUserOrIdManga(Long id_user,Long id_book);
+    @Query("DELETE FROM History c WHERE c.user.id_user=?1 OR c.book.id_list=?2")
+    void deleteHistoryByIdUserOrIdBook(Long id_user,Long id_book);
     @Transactional
     @Modifying
-    @Query("DELETE FROM History c WHERE c.id_book=?1")
-    void deleteHistoryByIdManga(Long id_book);
+    @Query("DELETE FROM History c WHERE c.book.id_list=?1")
+    void deleteHistoryByIdBook(Long id_book);
 
 }

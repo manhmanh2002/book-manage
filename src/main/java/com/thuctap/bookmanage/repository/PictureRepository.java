@@ -14,6 +14,9 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
     @Query("SELECT c FROM Picture c WHERE c.chapter.id_chapter =?1 order by c.id")
     public List<Picture> showBook(Long idChapter);
 
+    @Query("SELECT c FROM Picture c WHERE c.id=?1")
+    Picture findpictureByID(Long id);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM Picture c WHERE c.id=?1")

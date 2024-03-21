@@ -36,20 +36,25 @@ public class WebSecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/","/register",
-                                "/registration",
-                                "/forgot_password",
-                                "/Forgot_Password_Form",
-                                "/read_book",
-                                "/confirm_account",
-                                "/book-reading","/search_book","/select_book",
-                                "/data/**",
-                                "/user-photos/**",
-                                "/selectbook_author",
-                                "/selectchapter/**",
-                                "/index",
-                                "/hot",
-                                "/reset_password"
+                        .requestMatchers("/",
+                            "/register",
+                            "/registration",
+                            "/forgot_password",
+                            "/Forgot_Password_Form",
+                            "/read_book",
+                            "/confirm_account",
+                            "/book-reading",
+                            "/home/**",
+                            "/select_book",
+                            "/data/**",
+                            "/user-photos/**",
+                            "/selectbook_author",
+                            "/selectchapter/**",
+                            "/index",
+                            "/hot",
+                            "/reset_password",
+                            "selectCategory"
+
                         )
                         .permitAll()
                         .anyRequest().authenticated()

@@ -98,7 +98,7 @@
                         </button>
                     </form>
                     <form th:action="@{delete_user}" method="post">
-                        <input type="hidden" name="id" th:value="${user.getId_user()}">
+                        <input type="hidden" name="id_user" th:value="${user.getId_user()}">
                         <button class="btn2" type="submit">Delete User <i class="fa fa-ban" aria-hidden="true"></i>
                         </button>
                     </form>

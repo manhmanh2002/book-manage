@@ -9,6 +9,7 @@ import com.thuctap.bookmanage.service.DirService;
 import com.thuctap.bookmanage.service.TypeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -107,7 +108,7 @@ public class AuthorController {
                 String content = request.getParameter("content");
                 String fileName = StringUtils.cleanPath(file.getOriginalFilename());
                 ListBook newBook = bookRepository.save(new ListBook(userRepository.findUserById(Long.parseLong(id_user)),
-                        name, 0, fileName, content, java.time.LocalDate.now(), java.time.LocalTime.now()));
+                        name, 0, fileName, content, new Date()));
                 String uploadDir = "data/" + newBook.getId_list();
                 FileUploadUtil.saveFile(uploadDir, fileName, file);
 

@@ -90,16 +90,17 @@
         width: 10px;
     }
 
-    div a {
-        text-decoration: none;
-        font-size: 20px;
-        padding: 15px;
+    ul li {
         display: inline-block;
+        color: #5C469C;
+        padding: 10px 20px;
+        background-color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
     }
-
-    ul li {display: inline-block;color: #D4ADFC;text-align: center;}
     ul li:hover {
-        background: #5C469C;
+        background-color:#5C469C ;
         color: #fff;
     }
 
@@ -110,48 +111,56 @@
         display: none;
     }
     ul li ul li {
-        background: rgba(0,0,0,.5);
+        background: #fff;
         display: block;
         text-decoration: none;
-        text-align: center;
+        text-transform: uppercase;
     }
-    ul li ul li a {display:block;color: #5C469C;}
-    ul li ul li:hover,
-    ul li ul li:hover a{
-        background: #5C469C;
-        text-decoration: none;
+    .box1 a{
+        color: #5C469C;
+        font-size: 16px;
+    }
+    .box1 a:hover{
         color: #fff;
-        border-radius: 5px;
-        }
-    ul li ul li a:hover{text-decoration: none;color: #fff;}
+    }
+
 </style>
 
 <body>
 <div th:replace="~{Layout::html_content}"></div>
-
-<div style="margin-top: 10px"></div>
-<div id="list" style="height: 620px; overflow: auto">
+<div style="margin-left: 60px;margin-top: 50px;" >
+    <ul class = "box1">
+        <li>
+            <a style="display: block">Category</a>
+            <ul style="overflow: auto; max-height: 400px; width: 800px;flex-wrap: wrap;text-align: center;">
+                <li style="display: flex;flex: 1 0 21%;"><a th:href="@{selectCategory(id_category=0)}">All Categories</a></li>
+                <th:block th:each="category:${categories}">
+                    <li style="display: flex;flex: 1 0 21%;text-align: center;"><a th:href="@{selectCategory(id_category=${category.getId()})}"><span th:text="${category.getType_name()}"></span></a></li>
+                </th:block>
+            </ul>
+        </li>
+    </ul>
+</div>
+<div id="list" style="height: 620px; text-align: center">
     <ul style="display: flex;flex-wrap: wrap;">
-
-        <th:block th:each= "book:${list_book}">
+        <th:block th:each="book:${list_book}">
             <a th:title="${book.getDescription()}" th:href="@{select_book(id_book=${book.getId_list()})}">
                 <p>
-                    <ol>
-                        <section id="service" >
-                            <div class="food-service">
-                                <div class="box">
-                                    <img th:src="@{${book.getImage()}}" style="text-align: center" alt="loading...">
-                                    <br>
-                                    <a th:href="@{select_book(id_book=${book.getId_list()})}" class="secondary-heading"> <span th:text="${book.getName_book()}"></span> </a>
-                                    <br>
-                                    <h2 class="secondary-heading" style="margin-left: 15px;">Have <span th:text="${book.getCount_chapter()}"></span> chap!</h2>
-                                </div>
+                <ol>
+                    <section id="service" >
+                        <div class="food-service">
+                            <div class="box">
+                                <img th:src="@{${book.getImage()}}" style="text-align: center" alt="loading...">
+                                <br>
+                                <a th:href="@{select_book(id_book=${book.getId_list()})}" class="secondary-heading"> <span th:text="${book.getName_book()}"></span> </a>
+                                <br>
+                                <h2 class="secondary-heading" style="margin-left: 15px;">Have <span th:text="${book.getCount_chapter()}"></span> chap!</h2>
                             </div>
-                        </section>
-                    </ol>
+                        </div>
+                    </section>
+                </ol>
                 </p>
             </a>
-
         </th:block>
     </ul>
 </div>
@@ -160,7 +169,7 @@
     <div  id="history" style="height: 630px; overflow: auto">
         <table>
             <tr>
-                <th style="position: fixed; width: 185px;height: 30px;top:150px">
+                <th style="width: 185px;height: 30px;top:150px">
                     History
                 </th>
             </tr>
@@ -176,7 +185,7 @@
                                         <a th:href="@{select_book(id_book=${book.getId_list()})}" class="secondary-heading"> <span th:text="${book.getName_book()}"></span> </a>
                                         <br>
                                         <!--                            <h2 class="secondary-heading">Content: <span th:text="${book.getContent()}"></span> </h2>-->
-                                        <h2 class="secondary-heading" style="color: #D4ADFC">Have <span  th:text="${book.getCount_chapter()}"></span> chap!</h2>
+                                        <h2 class="secondary-heading" style="color: #222222">Have <span  th:text="${book.getCount_chapter()}"></span> chap!</h2>
                                     </div>
                                 </div>
                             </section>

@@ -84,7 +84,6 @@
         <th>Content book</th>
         <th>Count chapter</th>
         <th>Day create</th>
-        <th>Time</th>
         <th></th>
     </tr>
     <th:block th:each="book:${list}">
@@ -95,10 +94,9 @@
                 </form>
             </td>
             <td><img th:src="@{${book.getImage()}} " alt="loading..." /></td>
-            <td><span th:text="${book.getDescription()}"></span></td>
+            <td style = "max-width: 500px"><span th:text="${book.getDescription()}"></span></td>
             <td><span th:text="${book.getCount_chapter()}"></span></td>
             <td><span th:text="${book.getDay()}"></span></td>
-            <td><span th:text="${book.getTime()}"></span></td>
             <td>
                 <form th:action="@{/delete_book_admin}" method="post">
                     <input type="hidden" name="id_book" th:value="${book.getId_list()}">

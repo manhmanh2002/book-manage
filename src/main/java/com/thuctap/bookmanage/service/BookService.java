@@ -82,6 +82,9 @@ public class BookService {
     }
     public List<ListBook> showHistory(HttpServletRequest request){
         HttpSession session = request.getSession();
+        if (session.getAttribute("id") == null) {
+            return null;
+        }
         List<Long> list = historyRepository.findByIduser(Long.parseLong(session.getAttribute("id").toString()));
         List<ListBook> listBooks = new ArrayList<ListBook>();
         for(Long x:list){

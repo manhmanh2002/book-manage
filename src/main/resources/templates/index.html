@@ -98,13 +98,14 @@
     text-decoration: none;
     text-transform: uppercase;
   }
-  a{
+  .box1 a{
     color: #5C469C;
     font-size: 16px;
   }
   .box1 a:hover{
     color: #fff;
   }
+
 
 </style>
 <body>
@@ -118,7 +119,6 @@
         <th:block th:each="category:${categories}">
           <li style="display: flex;flex: 1 0 21%;text-align: center;"><a th:href="@{selectCategory(id_category=${category.getId()})}"><span th:text="${category.getType_name()}"></span></a></li>
         </th:block>
-
       </ul>
     </li>
   </ul>

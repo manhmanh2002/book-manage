@@ -80,7 +80,7 @@ public class Admin_controller {
         User admin = adminService.findUserById(Long.parseLong(id));
         User user = adminService.findUserById(Long.parseLong(request.getParameter("id_user")));
         String currentDirectory = System.getProperty("user.dir");
-        if((admin.getRole() == Role.SUPERADMIN || admin.getRole() == Role.ADMIN & user.getRole() == Role.USER) || user.getRole() == Role.ADMIN & admin.getRole() == Role.SUPERADMIN){
+        if((admin.getRole() == Role.SUPERADMIN)){
             List<ListBook> listBook = bookService.findByIdUser(user.getId_user());
             for(ListBook x:listBook){
                 historyRepository.deleteHistoryByIdUserOrIdBook(user.getId_user(), x.getId_list());
@@ -96,7 +96,7 @@ public class Admin_controller {
         model.addAttribute("id",session.getAttribute("id"));
         return "Admin_user";
     }
-    @PreAuthorize("hasAnyAuthority('ADMIN','SUPERADMIN')")
+    @PreAuthorize("hasAuthority('SUPERADMIN')")
     @PostMapping(value = "uplevel")
     public String upPower(HttpServletRequest request, Model model){
         HttpSession session = request.getSession();
@@ -108,7 +108,7 @@ public class Admin_controller {
 
         User admin = userService.findUser(Long.parseLong(id));
         User user = userService.findUser(Long.parseLong(request.getParameter("id")));
-        if(admin.getRole() == Role.SUPERADMIN || admin.getRole() == Role.ADMIN & user.getRole() == Role.USER){
+        if(admin.getRole() == Role.SUPERADMIN & user.getRole() == Role.USER){
             user.setRole(Role.ADMIN);
             userRepository.save(user);
         } else if (admin.getRole()==Role.SUPERADMIN & user.getRole() == Role.ADMIN) {
@@ -120,7 +120,7 @@ public class Admin_controller {
         model.addAttribute("id",session.getAttribute("id"));
         return "Admin_user";
     }
-    @PreAuthorize("hasAnyAuthority('SUPERADMIN','ADMIN')")
+    @PreAuthorize("hasAuthority('SUPERADMIN')")
     @RequestMapping(value = "downlevel")
     public String downPower(HttpServletRequest request, Model model){
         HttpSession session = request.getSession();
@@ -198,11 +198,11 @@ public class Admin_controller {
         String currentDirectory = System.getProperty("user.dir");
         File file = new File(currentDirectory + "/data/" + id_book+"/"+id_delete);
         
-        if(chapter.getId_chapter() == chapter.getPreChap()){
+        if(chapter.getId_chapter().equals(chapter.getPreChap()) ){
             Chapter chapter_First = chapterRepository.findChapterById(chapter.getNextChap());
             chapter_First.setPreChap(chapter_First.getId_chapter());
             chapterRepository.save(chapter_First);
-        } else if (chapter.getId_chapter() == chapter.getNextChap()){
+        } else if (chapter.getId_chapter().equals(chapter.getNextChap())){
             Chapter chapter_Last = chapterRepository.findChapterById(chapter.getPreChap());
             chapter_Last.setNextChap(chapter_Last.getId_chapter());
             chapterRepository.save(chapter_Last);
